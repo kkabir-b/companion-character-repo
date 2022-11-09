@@ -3,6 +3,7 @@ struct Triangle: Shape { // Create a custom shape. This is a triangle.
     func path(in rect: CGRect) -> Path {
         var path = Path()
         
+        
         path.move(to: CGPoint(x: rect.midX, y: rect.minY))
         path.addLine(to: CGPoint(x: rect.minX, y: rect.maxY))
         path.addLine(to: CGPoint(x: rect.maxX, y: rect.maxY))
@@ -12,9 +13,15 @@ struct Triangle: Shape { // Create a custom shape. This is a triangle.
     }
 }
 struct ContentView: View {
+    @State var smile=1.0
+    @State private var hasOffset=false
+    @State var points=0.0
+    @GestureState var dragOffset = CGSize.zero 
+    @State var position = CGSize.zero
     var body: some View {
         ZStack{
             ZStack{
+                
                 Triangle()
                     .fill(Color(red: 0.36, green: 0.25, blue: 0.01))
                     .frame(width:330,height:370)
@@ -76,7 +83,7 @@ struct ContentView: View {
             
             Text("3") // mouth
                 .rotationEffect(.degrees(90))
-                .font(.system(size:100))
+                .font(.system(size:100+smile))
                 .offset(x:4 , y: 10
                 )
                 .foregroundColor(.black)
@@ -88,6 +95,7 @@ struct ContentView: View {
                 .fill(.black)
                 .frame(width:50000,height:40)
                 .offset(x:0,y:130)
+            ZStack{
             
             Circle()
                 .fill(.white)
@@ -96,14 +104,35 @@ struct ContentView: View {
             Circle()
                 .fill(.white)
                 .frame(width:50000,height:15)
-                .offset(x:0,y:130)
+                .offset(x:0,y:130)    
+                Image("brush")
+                    .offset(x: position.width + dragOffset.width, y: position.height + dragOffset.height)
+                    .gesture(
+                        DragGesture()
+                            .onChanged(({ _ in
+                                points += 0.1
+                                smile+=0.05
+                            }))
+                            .updating($dragOffset, body: { (value, state, transaction) in
+                                
+                                state = value.translation
+                            })
+                            .onEnded({ (value) in // Remove this section and it will go back to where it starts
+                                self.position.height += value.translation.height
+                                self.position.width += value.translation.width
+                                print("height",position.height) // So you can see coordinates
+                                print("width",position.width)
+                            })
+                    )                
+            }
             
-            
+            Text("\(points, specifier: "%.2f")-->Caretaker points!")
+                .font(.title)
+                .foregroundColor(Color(red: 0.99, green: 0.80, blue: 0.00))
+                .offset(x:0,y:-285)
             
             
         }
     }
 }
-
-
 
