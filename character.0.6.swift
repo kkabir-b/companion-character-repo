@@ -19,7 +19,10 @@ struct ContentView: View {
     @GestureState var dragOffset = CGSize.zero 
     @State var position = CGSize.zero
     var body: some View {
-        ZStack{
+        
+            
+            ZStack{
+            
             ZStack{
                 
                 Triangle()
@@ -126,13 +129,28 @@ struct ContentView: View {
                     )                
             }
             
-            Text("\(points, specifier: "%.2f")-->Caretaker points!")
+                VStack{Text("\(points, specifier: "%.2f")-->Caretaker points!")
                 .font(.title)
+                
                 .foregroundColor(Color(red: 0.99, green: 0.80, blue: 0.00))
                 .offset(x:0,y:-285)
+                    Button(action:{points=0.0},label:{
+                        Text("Reset your love for him!")
+                            .font(.subheadline)
+                    })
+                    .offset(x:0,y:-280)
+                    
+                }
+            
+            
+            
+        
             
             
         }
+        
+        
     }
 }
+
 
